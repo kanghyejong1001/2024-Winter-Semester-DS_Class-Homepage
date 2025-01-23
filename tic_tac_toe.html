@@ -73,10 +73,12 @@
 
         function computerMove() {
             let emptyCells = board.map((v, i) => v === null ? i : null).filter(v => v !== null);
-            let move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
             removeOldestMove(computerMoves);
-            board[move] = computerSymbol;
-            computerMoves.push(move);
+            if (emptyCells.length > 0) {
+                let move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                board[move] = computerSymbol;
+                computerMoves.push(move);
+            }
             drawBoard();
             if (checkWin(computerSymbol)) {
                 document.getElementById('result').innerText = "컴퓨터가 승리했습니다!";
