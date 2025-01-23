@@ -28,7 +28,13 @@
     <div id="result"></div>
     <button onclick="restartGame()">다시 하기</button>
     <button onclick="location.href='index.html'">뒤로가기</button>
-
+    <div>
+        오목 규칙
+        <ul>
+            <li>1. 15x15 보드에서 흑 또는 백을 선택하여 게임을 진행합니다.</li>
+            <li>2. 가로, 세로, 대각선 중 하나라도 같은 기호가 5개 연속되면 승리합니다.</li>
+            <li>3. 승리 조건이 만족되면 게임이 종료되며 다시하기 버튼을 눌러 게임을 재시작할 수 있습니다.</li>
+        </ul>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');

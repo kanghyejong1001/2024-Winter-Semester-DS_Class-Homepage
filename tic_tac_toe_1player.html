@@ -33,6 +33,15 @@
         <button onclick="restartGame()">다시 하기</button>
     </div>
     <button onclick="location.href='index.html'">뒤로가기</button>
+    <div>
+        틱택토 규칙
+        <ul>
+            <li>1. 3x3 보드에서 O 또는 X를 선택하여 게임을 진행합니다.</li>
+            <li>2. 가로, 세로, 대각선 중 하나라도 같은 기호가 3개 연속되면 승리합니다.</li>
+            <li>3. 승리 조건이 만족되면 게임이 종료되며 다시하기 버튼을 눌러 게임을 재시작할 수 있습니다.</li>
+            <li>4. 기호는 3개까지 사용할 수 있으며 3개 이상인 경우 가장 오래된 기호가 사라지고 새로 선택한 자리에 기호가 놓아집니다.</li>
+        </ul>
+    </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
