@@ -133,8 +133,10 @@
             document.getElementById('selection').style.display = 'block';
             document.getElementById('result').innerText = '';
             drawBoard();
+            canvas.removeEventListener('click', handleClick);
             canvas.addEventListener('click', handleClick);
         }
+
 
         drawBoard();
     </script>
