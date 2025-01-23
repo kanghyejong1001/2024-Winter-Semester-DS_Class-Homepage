@@ -36,6 +36,7 @@
         const cellSize = canvas.width / size;
         let board = Array(size).fill(null).map(() => Array(size).fill(null));
         let currentPlayer = 'X';
+        let moveHistory = [];
 
         function drawBoard() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -66,6 +67,11 @@
             const y = Math.floor((event.clientY - rect.top) / cellSize);
             if (!board[y][x]) {
                 board[y][x] = currentPlayer;
+                moveHistory.push([y, x]);
+                if (moveHistory.length > 3) {
+                    const [oldY, oldX] = moveHistory.shift();
+                    board[oldY][oldX] = null;
+                }
                 drawBoard();
                 if (checkWin(currentPlayer)) {
                     document.getElementById('result').innerText = `${currentPlayer} 승리!`;
@@ -78,6 +84,7 @@
 
         function restartGame() {
             board = Array(size).fill(null).map(() => Array(size).fill(null));
+            moveHistory = [];
             currentPlayer = 'X';
             document.getElementById('result').innerText = '';
             drawBoard();
