@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>숫자 야구 게임</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        #inputSection {
+            margin-top: 20px;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>숫자 야구 게임</h1>
+    <div id="inputSection">
+        <input type="text" id="userInput" placeholder="4자리 숫자 입력">
+        <button onclick="submitGuess()">입력</button>
+    </div>
+    <div id="result"></div>
+    <button onclick="location.href='index.html'">뒤로가기</button>
+
+    <script>
+        let targetNumber;
+        let attempts = 0;
+
+        function generateRandomNumber() {
+            let digits = new Set();
+            while (digits.size < 4) {
+                digits.add(Math.floor(Math.random() * 10));
+            }
+            return Array.from(digits).join('');
+        }
+
+        function checkGuess(guess, target) {
+            let strikes = 0;
+            let balls = 0;
+            for (let i = 0; i < 4; i++) {
+                if (guess[i] === target[i]) {
+                    strikes++;
+                } else if (target.includes(guess[i])) {
+                    balls++;
+                }
+            }
+            return { strikes, balls };
+        }
+
+        function startGame() {
+            targetNumber = generateRandomNumber();
+            attempts = 0;
+            document.getElementById('result').innerHTML = '';
+            console.log("Target Number:", targetNumber); // 디버깅 용도
+        }
+
+        function submitGuess() {
+            let input = document.getElementById('userInput').value;
+            if (input.length === 4 && /^[0-9]{4}$/.test(input)) {
+                let result = checkGuess(input, targetNumber);
+                attempts++;
+                let resultText = `${input} -> ${result.strikes} 스트라이크, ${result.balls} 볼`;
+                document.getElementById('result').innerHTML += `<p>${resultText}</p>`;
+                if (result.strikes === 4) {
+                    document.getElementById('result').innerHTML += `<p>축하합니다! ${attempts}번 만에 정답입니다!</p>`;
+                }
+            } else {
+                alert("올바른 4자리 숫자를 입력하세요.");
+            }
+        }
+
+        window.onload = startGame;
+    </script>
+</body>
+</html>
