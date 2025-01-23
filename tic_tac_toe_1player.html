@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2인용 틱택토</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        #gameCanvas {
+            border: 2px solid #000;
+            background-color: #fff;
+            margin-top: 20px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>2인용 틱택토</h1>
+    <canvas id="gameCanvas" width="300" height="300"></canvas>
+    <div id="result"></div>
+    <button onclick="restartGame()">다시 하기</button>
+    <button onclick="location.href='index.html'">뒤로가기</button>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const size = 3;
+        const cellSize = canvas.width / size;
+        let board = Array(size).fill(null).map(() => Array(size).fill(null));
+        let currentPlayer = 'X';
+
+        function drawBoard() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    ctx.strokeRect(j * cellSize, i * cellSize, cellSize, cellSize);
+                    if (board[i][j]) {
+                        ctx.fillText(board[i][j], j * cellSize + cellSize / 3, i * cellSize + cellSize / 1.5);
+                    }
+                }
+            }
+        }
+
+        function checkWin(player) {
+            for (let i = 0; i < size; i++) {
+                if (board[i].every(cell => cell === player) || board.map(row => row[i]).every(cell => cell === player)) {
+                    return true;
+                }
+            }
+            if (board[0][0] === player && board[1][1] === player && board[2][2] === player) return true;
+            if (board[0][2] === player && board[1][1] === player && board[2][0] === player) return true;
+            return false;
+        }
+
+        function handleClick(event) {
+            const rect = canvas.getBoundingClientRect();
+            const x = Math.floor((event.clientX - rect.left) / cellSize);
+            const y = Math.floor((event.clientY - rect.top) / cellSize);
+            if (!board[y][x]) {
+                board[y][x] = currentPlayer;
+                drawBoard();
+                if (checkWin(currentPlayer)) {
+                    document.getElementById('result').innerText = `${currentPlayer} 승리!`;
+                    canvas.removeEventListener('click', handleClick);
+                    return;
+                }
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            }
+        }
+
+        function restartGame() {
+            board = Array(size).fill(null).map(() => Array(size).fill(null));
+            currentPlayer = 'X';
+            document.getElementById('result').innerText = '';
+            drawBoard();
+            canvas.addEventListener('click', handleClick);
+        }
+
+        drawBoard();
+        canvas.addEventListener('click', handleClick);
+    </script>
+</body>
+</html>
