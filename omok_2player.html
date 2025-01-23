@@ -95,7 +95,7 @@
 
         function restartGame() {
             board = Array(size).fill(null).map(() => Array(size).fill(null));
-            currentPlayer = 'black';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             document.getElementById('result').innerText = '';
             drawBoard();
             canvas.addEventListener('click', handleClick);
