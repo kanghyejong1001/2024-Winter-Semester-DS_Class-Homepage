@@ -38,6 +38,7 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
+        // 숫자야구
         function generateRandomNumber() {
             let digits = new Set();
             while (digits.size < 4) {
@@ -58,26 +59,28 @@
             }
             return { strikes, balls };
         }
-        // 숫자야구
+
         function startNumberBaseball() {
             clearCanvas();
-            let targetNumber = generateRandomNumber();
-            let attempts = 0;
-            let input;
-            do {
-                input = prompt("4자리 숫자를 입력하세요:");
-                if (input && input.length === 4 && /^[0-9]{4}$/.test(input)) {
-                    let result = checkGuess(input, targetNumber);
-                    attempts++;
-                    ctx.fillText(`${input} -> ${result.strikes} 스트라이크, ${result.balls} 볼`, 150, 200 + attempts * 20);
-                    if (result.strikes === 4) {
-                        ctx.fillText(`축하합니다! ${attempts}번 만에 정답입니다!`, 150, 300);
-                        break;
-                    }
-                } else {
-                    alert("올바른 4자리 숫자를 입력하세요.");
+            document.getElementById('result').innerHTML = '';
+            targetNumber = generateRandomNumber();
+            attempts = 0;
+            ctx.fillText("4자리 숫자를 입력하세요.", 200, 200);
+        }
+
+        function submitNumberBaseball() {
+            let input = document.getElementById('userInput').value;
+            if (input.length === 4 && /^[0-9]{4}$/.test(input)) {
+                let result = checkGuess(input, targetNumber);
+                attempts++;
+                let resultText = `${input} -> ${result.strikes} 스트라이크, ${result.balls} 볼`;
+                document.getElementById('result').innerHTML += `<p>${resultText}</p>`;
+                if (result.strikes === 4) {
+                    document.getElementById('result').innerHTML += `<p>축하합니다! ${attempts}번 만에 정답입니다!</p>`;
                 }
-            } while (input !== targetNumber);
+            } else {
+                alert("올바른 4자리 숫자를 입력하세요.");
+            }
         }
 
         // 틱택토
