@@ -35,8 +35,6 @@
     <canvas id="gameCanvas" width="600" height="600"></canvas>
     <div id="result"></div>
     <button onclick="restartGame()">다시 하기</button>
-    <button onclick="location.href='index.html'">뒤로가기</button>
-
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -65,9 +63,7 @@
         }
 
         function checkWin(row, col, color) {
-            const directions = [
-                [1, 0], [0, 1], [1, 1], [1, -1]
-            ];
+            const directions = [[1, 0], [0, 1], [1, 1], [1, -1]];
             for (let [dx, dy] of directions) {
                 let count = 1;
                 for (let dir of [-1, 1]) {
@@ -85,20 +81,36 @@
         }
 
         function computerMove() {
-            let emptyCells = [];
+            let bestMove = null;
+            let bestScore = -Infinity;
             for (let i = 0; i < size; i++) {
                 for (let j = 0; j < size; j++) {
-                    if (!board[i][j]) emptyCells.push([i, j]);
+                    if (!board[i][j]) {
+                        board[i][j] = computerStone;
+                        if (checkWin(i, j, computerStone)) {
+                            bestMove = [i, j];
+                            board[i][j] = null;
+                            break;
+                        }
+                        board[i][j] = null;
+                    }
                 }
+                if (bestMove) break;
             }
-            if (emptyCells.length > 0) {
-                let [y, x] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-                board[y][x] = computerStone;
-                drawBoard();
-                if (checkWin(y, x, computerStone)) {
-                    document.getElementById('result').innerText = `컴퓨터(${computerStone === 'black' ? '흑' : '백'})가 이겼습니다!`;
-                    canvas.removeEventListener('click', handleClick);
+            if (!bestMove) {
+                let emptyCells = [];
+                for (let i = 0; i < size; i++) {
+                    for (let j = 0; j < size; j++) {
+                        if (!board[i][j]) emptyCells.push([i, j]);
+                    }
                 }
+                bestMove = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            }
+            board[bestMove[0]][bestMove[1]] = computerStone;
+            drawBoard();
+            if (checkWin(bestMove[0], bestMove[1], computerStone)) {
+                document.getElementById('result').innerText = `컴퓨터(${computerStone === 'black' ? '흑' : '백'})가 이겼습니다!`;
+                canvas.removeEventListener('click', handleClick);
             }
         }
 
@@ -133,10 +145,8 @@
             document.getElementById('selection').style.display = 'block';
             document.getElementById('result').innerText = '';
             drawBoard();
-            canvas.removeEventListener('click', handleClick);
             canvas.addEventListener('click', handleClick);
         }
-
 
         drawBoard();
     </script>
