@@ -39,6 +39,7 @@
         const ctx = canvas.getContext('2d');
         let board;
         let userSymbol, computerSymbol;
+        let userMoves = [];
 
         function drawBoard() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -63,18 +64,15 @@
             );
         }
 
+        function removeOldestMove() {
+            if (userMoves.length >= 3) {
+                let oldestMove = userMoves.shift();
+                board[oldestMove] = null;
+            }
+        }
+
         function computerMove() {
             let emptyCells = board.map((v, i) => v === null ? i : null).filter(v => v !== null);
-            for (let move of emptyCells) {
-                board[move] = computerSymbol;
-                if (checkWin(computerSymbol)) {
-                    drawBoard();
-                    document.getElementById('result').innerText = "컴퓨터가 승리했습니다!";
-                    document.getElementById('restart').style.display = 'block';
-                    return;
-                }
-                board[move] = null;
-            }
             let move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
             board[move] = computerSymbol;
             drawBoard();
@@ -89,7 +87,9 @@
             let y = Math.floor(event.offsetY / 100);
             let index = y * 3 + x;
             if (!board[index]) {
+                removeOldestMove();
                 board[index] = userSymbol;
+                userMoves.push(index);
                 drawBoard();
                 if (checkWin(userSymbol)) {
                     document.getElementById('result').innerText = "사용자가 승리했습니다!";
@@ -104,6 +104,7 @@
             userSymbol = symbol;
             computerSymbol = userSymbol === 'O' ? 'X' : 'O';
             board = Array(9).fill(null);
+            userMoves = [];
             document.getElementById('selection').style.display = 'none';
             document.getElementById('restart').style.display = 'none';
             document.getElementById('result').innerText = '';
