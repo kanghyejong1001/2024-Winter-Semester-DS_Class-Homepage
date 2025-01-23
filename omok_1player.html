@@ -129,6 +129,7 @@
 
         function restartGame() {
             board = Array(size).fill(null).map(() => Array(size).fill(null));
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             document.getElementById('selection').style.display = 'block';
             document.getElementById('result').innerText = '';
             drawBoard();
