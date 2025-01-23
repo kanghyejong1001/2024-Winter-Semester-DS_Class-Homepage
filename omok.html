@@ -46,6 +46,11 @@
                         ctx.arc(j * cellSize + cellSize / 2, i * cellSize + cellSize / 2, cellSize / 3, 0, Math.PI * 2);
                         ctx.fillStyle = board[i][j];
                         ctx.fill();
+                        if (board[i][j] === 'white') {
+                            ctx.strokeStyle = 'black';
+                            ctx.lineWidth = 2;
+                            ctx.stroke();
+                        }
                     }
                 }
             }
