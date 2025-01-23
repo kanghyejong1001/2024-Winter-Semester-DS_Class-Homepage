@@ -20,28 +20,23 @@
             font-size: 20px;
             font-weight: bold;
         }
-        #selection {
-            margin-bottom: 20px;
-        }
     </style>
 </head>
 <body>
     <h1>오목 게임</h1>
-    <div id="selection">
-        <label>돌을 선택하세요: </label>
-        <button onclick="startGame('black')">흑돌</button>
-        <button onclick="startGame('white')">백돌</button>
-    </div>
     <canvas id="gameCanvas" width="600" height="600"></canvas>
     <div id="result"></div>
     <button onclick="restartGame()">다시 하기</button>
+    <button onclick="location.href='index.html'">뒤로가기</button>
+
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const size = 15;
         const cellSize = canvas.width / size;
         let board = Array(size).fill(null).map(() => Array(size).fill(null));
-        let userStone, computerStone;
+        let userStone = 'black';
+        let computerStone = 'white';
 
         function drawBoard() {
             for (let i = 0; i < size; i++) {
@@ -63,7 +58,9 @@
         }
 
         function checkWin(row, col, color) {
-            const directions = [[1, 0], [0, 1], [1, 1], [1, -1]];
+            const directions = [
+                [1, 0], [0, 1], [1, 1], [1, -1]
+            ];
             for (let [dx, dy] of directions) {
                 let count = 1;
                 for (let dir of [-1, 1]) {
@@ -81,36 +78,20 @@
         }
 
         function computerMove() {
-            let bestMove = null;
-            let bestScore = -Infinity;
+            let emptyCells = [];
             for (let i = 0; i < size; i++) {
                 for (let j = 0; j < size; j++) {
-                    if (!board[i][j]) {
-                        board[i][j] = computerStone;
-                        if (checkWin(i, j, computerStone)) {
-                            bestMove = [i, j];
-                            board[i][j] = null;
-                            break;
-                        }
-                        board[i][j] = null;
-                    }
+                    if (!board[i][j]) emptyCells.push([i, j]);
                 }
-                if (bestMove) break;
             }
-            if (!bestMove) {
-                let emptyCells = [];
-                for (let i = 0; i < size; i++) {
-                    for (let j = 0; j < size; j++) {
-                        if (!board[i][j]) emptyCells.push([i, j]);
-                    }
+            if (emptyCells.length > 0) {
+                let [y, x] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                board[y][x] = computerStone;
+                drawBoard();
+                if (checkWin(y, x, computerStone)) {
+                    document.getElementById('result').innerText = '컴퓨터가 이겼습니다!';
+                    canvas.removeEventListener('click', handleClick);
                 }
-                bestMove = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-            }
-            board[bestMove[0]][bestMove[1]] = computerStone;
-            drawBoard();
-            if (checkWin(bestMove[0], bestMove[1], computerStone)) {
-                document.getElementById('result').innerText = `컴퓨터(${computerStone === 'black' ? '흑' : '백'})가 이겼습니다!`;
-                canvas.removeEventListener('click', handleClick);
             }
         }
 
@@ -123,7 +104,7 @@
                 board[y][x] = userStone;
                 drawBoard();
                 if (checkWin(y, x, userStone)) {
-                    document.getElementById('result').innerText = `사용자(${userStone === 'black' ? '흑' : '백'})가 이겼습니다!`;
+                    document.getElementById('result').innerText = '사용자가 이겼습니다!';
                     canvas.removeEventListener('click', handleClick);
                 } else {
                     computerMove();
@@ -131,24 +112,17 @@
             }
         }
 
-        function startGame(selectedStone) {
-            userStone = selectedStone;
-            computerStone = userStone === 'black' ? 'white' : 'black';
-            document.getElementById('selection').style.display = 'none';
-            drawBoard();
-            canvas.addEventListener('click', handleClick);
-        }
-
         function restartGame() {
             board = Array(size).fill(null).map(() => Array(size).fill(null));
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            document.getElementById('selection').style.display = 'block';
             document.getElementById('result').innerText = '';
             drawBoard();
+            canvas.removeEventListener('click', handleClick);
             canvas.addEventListener('click', handleClick);
         }
 
         drawBoard();
+        canvas.addEventListener('click', handleClick);
     </script>
 </body>
 </html>
